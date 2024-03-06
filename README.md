@@ -1,4 +1,12 @@
-# LLM_HumanFeedback
+# Training language models to follow instructions with human feedback
+
+# Overview (Kit)
+
+
+# Architecture Overview (Tony)
+
+
+# Critical Analysis (Kit)
 
 
 # Resources

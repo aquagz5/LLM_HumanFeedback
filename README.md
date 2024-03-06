@@ -17,6 +17,9 @@ Solaiman, I. and Dennison, C. (2021). Process for adapting language models to so
 **A Promising Future Path for RLHF Using Control Codes**
 Keskar, N. S., McCann, B., Varshney, L. R., Xiong, C., and Socher, R. (2019). Ctrl: A conditionaltransformer language model for controllable generation. arXiv preprint arXiv:1909.05858.
 
+**Proposal to Align Superhuman Systems using RLHF**
+Leike, J., Krueger, D., Everitt, T., Martic, M., Maini, V., and Legg, S. (2018). Scalable agent alignment via reward modeling: a research direction. arXiv preprint arXiv:1811.07871
+
 **A Promising Future Path for RLHF Modifying the Sampling Procedure**
 Dathathri, S., Madotto, A., Lan, J., Hung, J., Frank, E., Molino, P., Yosinski, J., and Liu, R. (2019). Plug and play language models: A simple approach to controlled text generation. arXiv preprintarXiv:1912.02164.
 

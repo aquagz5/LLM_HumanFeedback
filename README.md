@@ -5,6 +5,8 @@
 
 # Architecture Overview (Tony)
 
+![Methodology Diagram](LLM-HF-figure.JPG)
+
 
 # Critical Analysis (Kit)
 

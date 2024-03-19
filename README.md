@@ -11,6 +11,12 @@
   <img src="Images/LLM-HF-figure.JPG" alt="Methodology Overview">
 </p>
 
+* **Goal**: Build a model environment to align models to be more helpful, honest, and harmless.
+* Step 1 (Supervised Fine-Tuning): Using demonstration data, which includes prompts and expected outputs, to fine-tune a GPT model to learn directly from example
+* Step 2 (Reward Modeling): Using comparison data, which includes prompts and generated outputs with rankings, to select outputs that are more aligned to human preference
+* Step 3 (Reinforcement Learning from Human Feedback): Language model (InstructGPT) is further fine-tuned using reinfocement learning, guided by reward model to generate ouputs that maximize the predicted human preference 
+
+
 ## Data Collection
 
 <p align="center">

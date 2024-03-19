@@ -23,7 +23,7 @@
 * In addition, labelers wrote prompts themselves for an initial source of instruction-like prompts to bootstrap the process. This include:
     * Plain: Labelers were asked to come up with an arbitrary task,
     * Few-Shot: labelers came up with an instruction and multiple responses to choose from, and
-    * User-based: lablers came up with prompts that were use-cases to users on a waitlist to increase diversity in our data
+    * User-based: lablers came up with prompts that were use-cases to users on a waitlist to increase diversity in our data.
 * Prompts include the following categories:
     * Brainstorming
     * Classification
@@ -33,18 +33,59 @@
     * Chat
     * Closed QA
     * Open QA
-    * Summarization
+    * Summarization.
 
 <p align="center">
   <img src="Images/dataset_sizes.JPG" alt="Dataset Sizes Overview">
 </p>
 
-* 13k training prompts on Supervised Fine-Tuning
-* 33k training prompts on Reward Modeling
-* 31k training prompts on Reinforcement Learning
+* 13k training prompts on Supervised Fine-Tuning.
+* 33k training prompts on Reward Modeling.
+* 31k training prompts on Reinforcement Learning.
 
 
 ## Step 1: Supervised Fine-Tuning (SFT)
+
+* Train on Demonstration Data: Prompts with corresponding labeled outputs from labelers (to handle quality control).
+* Model Usage: Training the language model to replicate and generate responses, improving its ability to generate text that meet the alignment standards
+* Model Objective: Minimize the difference between modeling generated outputs and human-provided target outputs
+
+---
+
+**Algorithm 1:**
+$\Theta_{ft} \leftarrow \text{SFT}(X, Y, \Theta)$
+
+#### Inputs
+- `X, Y`: Labeled demonstration data, where `X` represents the input prompts and `Y` represents the corresponding target outputs.
+- `Θ`: Initial parameters of the GPT-3 model.
+
+#### Output
+- `Θ_ft`: The model parameters adjusted through the fine-tuning process.
+
+#### Hyperparameters
+- `N_epochs ∈ ℕ`: Number of epochs, representing the total number of passes over the entire training dataset.
+- `batch size`: The number of training examples utilized in one iteration.
+- `η_init`: Initial learning rate, a scalar used to adjust the magnitude of parameter updates at the start of training.
+- `β1, β2, ε`: Hyperparameters specific to the Adam optimizer. `β1` and `β2` control the exponential decay rates for the moment estimates. `ε` is a small scalar added to prevent division by zero in the optimizer's calculations.
+
+#### Process
+1. **Initialization**: Prepare the GPT-3 model with the pretrained weights `Θ` and initialize the Adam optimizer with the specified initial learning rate `η_init` and hyperparameters.
+
+2. **Training Loop**:
+   - For each epoch `i` from 1 to `N_epochs`:
+     - **Cosine Decay Adjustment**: Adjust the learning rate `η` for the current epoch using the cosine decay formula. The adjusted learning rate `η` is calculated as follows:
+       ```
+       η = η_init * (1 + cos(pi * i / N_epochs)) / 2
+       ```
+       This formula gradually decreases the learning rate from `η_init` to near 0 following a cosine curve over the epochs.
+     - For each batch `(input_batch, target_batch)` in the dataset:
+       - **Forward Pass**: Compute the predicted output `Y_hat` for `input_batch` using the GPT-3 model.
+       - **Loss Calculation**: Compute the loss using a suitable `LossFunction` that measures the difference between `Y_hat` and `target_batch`.
+       - **Backward Pass and Parameter Update**: Use the Adam optimizer with the current learning rate `η` to update the model parameters `Θ_ft` based on the gradients of the loss function.
+
+3. **Output**: Return the fine-tuned model parameters `Θ_ft`.
+
+---
 
 
 ## Step 2: Reward Modeling (RM)

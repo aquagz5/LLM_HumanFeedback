@@ -47,7 +47,7 @@
 ## Step 1: Supervised Fine-Tuning (SFT)
 
 * Train on Demonstration Data: Prompts with corresponding labeled outputs from labelers (to handle quality control).
-* Model Usage: Training the language model to replicate and generate responses, improving its ability to generate text that meet the alignment standards
+* Model Purpose: Training the language model to replicate and generate responses, improving its ability to generate text that meet the alignment standards
 * Model Objective: Minimize the difference between modeling generated outputs and human-provided target outputs
 
 ---
@@ -90,10 +90,57 @@ $\Theta_{ft} \leftarrow \text{SFT}(X, Y, \Theta)$
 
 ## Step 2: Reward Modeling (RM)
 
+* Train on Comparison Data: Rather than training a model on generating text, we want the model to select the best output that the SFT model generated. Thus, the data used to train the reward model includes a prompt along with rankings of desired outputs
+
 <p align="center">
   <img src="Images/RM_data.JPG" alt="RM Data">
 </p>
 
+* Model Purpose: Evaluate the quality of generated texts providing a reward signal that indicates how well a piece of text meets the alighment criteria. This acts as a proxy for human judgement
+* Model Objective: accuratley predict human preferences amoung different generated outputs from the same input, using the following loss function:
+
+$$\text{loss}(\Theta) = -\frac{1}{\binom{K}{2}}E_{(x,y_w,y_l)~D}[log(\sigma(r_\Theta(x,y_w)-r_\Theta(x,y_l)))]$$ 
+
+---
+
+**Algorithm 2**
+$\Theta_{RM} \leftarrow \text{RM}(X, Y_K, \Theta)$
+
+#### Inputs
+- `D`: Dataset of sets, each containing `K` responses \((x, \{y_1, y_2, ..., y_K\})\), where `x` is an input prompt and `\{y_1, y_2, ..., y_K\}` are the responses with implied pairwise preferences among them based on human judgments.
+- `Θ_initial`: Initial parameters for the reward model
+
+#### Output
+- `Θ_RM`: Adjusted reward model parameters after the training process.
+
+#### Hyperparameters
+- `N_epochs ∈ ℕ`: Number of training epochs, indicating the total number of complete passes over the dataset `D`.
+- `batch size`: The number of sets processed in one iteration of training.
+- `η`: Learning rate, a scalar used to adjust the magnitude of parameter updates.
+- `Optimizer`: Adam, including its specific hyperparameters `β1`, `β2`, and `ε`.
+
+#### Process
+1. **Initialization**: 
+   - Initialize the reward model with parameters `Θ_initial`.
+   - Prepare the optimizer with the learning rate `η` and its hyperparameters.
+
+2. **Training Loop**:
+   - For `epoch` in range(1, `N_epochs`+1):
+     - Shuffle dataset `D` to ensure a random distribution of data in each epoch.
+     - For each set \((x, \{y_1, y_2, ..., y_K\})\) in `D`:
+       - Initialize `set_loss` to 0.
+       - Generate all possible pairs `(y_w, y_l)` from the set of `K` responses, considering `y_w` is preferred over `y_l`.
+       - For each pair `(y_w, y_l)` in the set:
+         - Compute `score_diff = r_Θ(x, y_w) - r_Θ(x, y_l)`.
+         - Calculate the logistic loss for the pair: `pair_loss = -log(sigma(score_diff))`.
+         - Accumulate the loss: `set_loss += pair_loss`.
+       - Normalize set loss by the total number of pairs $\binom{K}{2}$ in the set to compute the average loss: $averageLoss = \frac{setLoss}{\binom{K}{2}}$.
+       - Update `Θ_RM` using the optimizer to minimize `average_loss`.
+
+3. **Output**: 
+   - Return the trained reward model parameters `Θ_RM`.
+
+---
 
 ## Step 3: Reinforcement Learning
 

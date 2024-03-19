@@ -5,7 +5,32 @@
 
 # Architecture Overview (Tony)
 
-![Methodology Diagram](LLM-HF-figure.JPG)
+## Methodology Overview
+
+<p align="center">
+  <img src="Images/LLM-HF-figure.JPG" alt="Methodology Overview">
+</p>
+
+## Data Collection
+
+<p align="center">
+  <img src="Images/dataset_sizes.JPG" alt="Dataset Sizes Overview">
+</p>
+
+
+## Step 1: Supervised Fine-Tuning (SFT)
+
+
+## Step 2: Reward Modeling (RM)
+
+<p align="center">
+  <img src="Images/RM_data.JPG" alt="RM Data">
+</p>
+
+
+## Step 3: Reinforcement Learning
+
+
 
 
 # Critical Analysis (Kit)

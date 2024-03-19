@@ -97,7 +97,7 @@ $\Theta_{ft} \leftarrow \text{SFT}(X, Y, \Theta)$
 </p>
 
 * Model Purpose: Evaluate the quality of generated texts providing a reward signal that indicates how well a piece of text meets the alighment criteria. This acts as a proxy for human judgement
-* Model Objective: accuratley predict human preferences amoung different generated outputs from the same input, using the following loss function:
+* Model Objective: accuratley predict human preferences among different generated outputs from the same input, using the following loss function:
 
 $$\text{loss}(\Theta) = -\frac{1}{\binom{K}{2}}E_{(x,y_w,y_l)~D}[log(\sigma(r_\Theta(x,y_w)-r_\Theta(x,y_l)))]$$ 
 

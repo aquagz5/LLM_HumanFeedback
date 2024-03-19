@@ -99,7 +99,7 @@ $\Theta_{ft} \leftarrow \text{SFT}(X, Y, \Theta)$
 * Model Purpose: Evaluate the quality of generated texts providing a reward signal that indicates how well a piece of text meets the alighment criteria. This acts as a proxy for human judgement
 * Model Objective: accuratley predict human preferences among different generated outputs from the same input, using the following loss function:
 
-$$\text{loss}(\Theta) = -\frac{1}{\binom{K}{2}}E_{(x,y_w,y_l)~D}[log(\sigma(r_\Theta(x,y_w)-r_\Theta(x,y_l)))]$$ 
+$$\text{loss}(\Theta) = -\frac{1}{\binom{K}{2}}E_{(x,y_w,y_l)\sim D}[log(\sigma(r_\Theta(x,y_w)-r_\Theta(x,y_l)))]$$ 
 
 ---
 
@@ -143,6 +143,58 @@ $\Theta_{RM} \leftarrow \text{RM}(X, Y_K, \Theta)$
 ---
 
 ## Step 3: Reinforcement Learning
+
+* Proximal Policy Optimization (PPO): Type of reinfocement learning algorithm use to improve models using a reward signal to uptate the model (i.e. it's policy) to increase rewards over time. In this case, we use the RM to update the parameters of the SFT model in accordance.
+* Train on Prompt data: This includes unlabled data from the customers (to prepare the models for real-world use-cases)
+* Model Purpose: Fine-tune the language model to generate text that maximizes the rewards by the reward model. It's goal is to align the generated text to what humans consider good using the RM as a proxy.
+* Model Objective: The model's objective is to align the langauge model to a more helpful chatbot in this learning environment using the following objective function:
+$$objective(\Theta) = E_{(x,y)\sim D_{\pi_\Theta^{RL}}}[r_\Theta(x,y)-\beta log(\pi_\Theta^{RL}(y|x)/\pi^{SFT}(y|x))] + \gamma E_{x\sim D_{\text{pretrain}}}[log(\pi_\Theta^{RL}(x))]$$
+
+---
+**Algorithm 3**
+$\Theta_{RL} \leftarrow \text{RL}(X, RM, \Theta_{SFT})$
+
+#### Inputs
+- `X`: Prompts for reinforcement learning, generated under policy $\pi_{\Theta}^{RL}$.
+- `Θ_RL_initial`: Initial parameters of the RL-tuned language model.
+- `Θ_SFT`: Parameters of the Supervised Fine-Tuning (SFT) model for reference.
+- `RM`: Trained Reward Model.
+
+#### Output
+- `Θ_RL`: Updated parameters of the RL-tuned language model after optimization.
+
+#### Hyperparameters
+- `N_epochs ∈ ℕ`: Number of epochs, indicating the total number of complete passes over the reinforcement learning dataset `D_RL`.
+- `batch size`: The number of input prompts processed in one iteration of training.
+- `η`: Learning rate, a scalar used to adjust the magnitude of parameter updates.
+- `β`: Coefficient for controlling deviation from SFT policy.
+- `γ`: Coefficient for maintaining general language capabilities.
+- `Optimizer`: Adam, including its specific hyperparameters `β1`, `β2`, and `ε`.
+
+#### Process
+1. **Initialization**: 
+   - Initialize the RL-tuned language model with parameters `Θ_RL_initial` with `Θ_SFT`
+   - Prepare the optimizer (Adam) with the learning rate `η` and its hyperparameters (`β1`, `β2`, `ε`).
+
+2. **Training Loop**:
+   - For `epoch` in range(1, `N_epochs`+1):
+     - Shuffle prompts `X` to ensure a random distribution of data in each epoch.
+     - For each batch of input prompts `(x)` from `X`:
+       - Generate responses `(y)` using the current policy $\pi_{\Theta}^{RL}$.
+       - For each response `(y)` given input `(x)`:
+         - Compute the reward `r_{\Theta}(x, y)` using RM.
+         - Calculate the log probability ratio $log(\pi_{\Theta}^{RL}(y|x) / \pi^{SFT}(y|x))$.
+         - Compute the objective function:
+           - $objective(\Theta) = E_{(x,y)\sim D_{\pi_\Theta^{RL}}}[r_{\Theta}(x,y)] - \beta log(\pi_{\Theta}^{RL}(y|x)/\pi^{SFT}(y|x)) + \gamma E_{x\sim D_{\text{pretrain}}}[log(\pi_{\Theta}^{RL}(x))]$.
+         - Update `Θ_RL` using the optimizer to maximize the objective function, effectively minimizing the loss.
+     
+3. **Output**: 
+   - Return the updated parameters `Θ_RL` for the RL-tuned language model.
+
+
+
+
+---
 
 
 

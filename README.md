@@ -12,16 +12,36 @@
 </p>
 
 * **Goal**: Build a model environment to align models to be more helpful, honest, and harmless.
-* Step 1 (Supervised Fine-Tuning): Using demonstration data, which includes prompts and expected outputs, to fine-tune a GPT model to learn directly from example
-* Step 2 (Reward Modeling): Using comparison data, which includes prompts and generated outputs with rankings, to select outputs that are more aligned to human preference
-* Step 3 (Reinforcement Learning from Human Feedback): Language model (InstructGPT) is further fine-tuned using reinfocement learning, guided by reward model to generate ouputs that maximize the predicted human preference 
+* Step 1 (Supervised Fine-Tuning): Using demonstration data, which includes prompts and expected outputs, to fine-tune a GPT model to learn directly from example.
+* Step 2 (Reward Modeling): Using comparison data, which includes prompts and generated outputs with rankings, to select outputs that are more aligned to human preference.
+* Step 3 (Reinforcement Learning from Human Feedback): Language model (InstructGPT) is further fine-tuned using reinfocement learning, guided by reward model to generate ouputs that maximize the predicted human preference. 
 
 
 ## Data Collection
 
+* Prompts primarily consist of OpenAI prompts from actual users that agreed to use a GPT model on a playground interface.
+* In addition, labelers wrote prompts themselves for an initial source of instruction-like prompts to bootstrap the process. This include:
+    * Plain: Labelers were asked to come up with an arbitrary task,
+    * Few-Shot: labelers came up with an instruction and multiple responses to choose from, and
+    * User-based: lablers came up with prompts that were use-cases to users on a waitlist to increase diversity in our data
+* Prompts include the following categories:
+    * Brainstorming
+    * Classification
+    * Extract
+    * Generation
+    * Rewrite
+    * Chat
+    * Closed QA
+    * Open QA
+    * Summarization
+
 <p align="center">
   <img src="Images/dataset_sizes.JPG" alt="Dataset Sizes Overview">
 </p>
+
+* 13k training prompts on Supervised Fine-Tuning
+* 33k training prompts on Reward Modeling
+* 31k training prompts on Reinforcement Learning
 
 
 ## Step 1: Supervised Fine-Tuning (SFT)

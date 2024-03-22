@@ -240,8 +240,11 @@ $\Theta_{RL} \leftarrow \text{RL}(X, RM, \Theta_{SFT})$
 
 # Critical Analysis (Kit)
 
+While the paper covered the succes of aligning the model with human intentions from feedback, there were a few things yet to be discussed...
 
-
+* Scalability - Models continue to grow in size, applications, and complexity. As these all occur, this approach may not be as feasible as it relies on manual intervention to cover all possibilities.
+* Diversity in Feedback - The paper does not discuss how diversity in the human labelers may impact the alignment across cultures. An extremely wide amount of diversity would be necessary to avoid omitting any cultures or embedding potential biases in the model.
+* Other Alignment Techniques - While the paper compared the model directly to well known GPT models, it did not address or compare the model to additional alignment based models, which would provide a more in depth comparison of the results.
 
 # Resources
 **Original Devlopement of Reinforcement Learning from Human Feedback**

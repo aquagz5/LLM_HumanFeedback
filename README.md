@@ -6,9 +6,9 @@
 
 * Large Language models (LLMs) often generate outputs that do not align with user intentions, including untruthful, biased, or irrelevant responses.
 * This is called misalignment, which becomes problematic as LLMs are increasingly used across a wide range of applications.
-* The paper proposes leveraging human feedback for fine-tuning LLMs to better align them with human intent across various tasks.
 * Despite the increasing size of LLMs, their proficiency in accurately understanding and executing user intents does not necessarily progress, leading to outputs that may be misaligned, biased, or inadvertently toxic.
 * The core issue addressed is ensuring LLMs act in ways that are beneficial, truthful, and ethically aligned with user expectations.
+* The paper proposes leveraging human feedback for fine-tuning LLMs to better align them with human intent across various tasks.
 
 ## Misalignment
 
